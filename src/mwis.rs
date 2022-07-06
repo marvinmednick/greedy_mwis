@@ -1,12 +1,14 @@
 use log::{ info, error, debug, trace };
 use std::collections::HashMap;
+use std::collections::BTreeMap;
+use std::cmp::max;
 
 
 
 //#[derive(Debug)]
 pub struct MWISInfo {
     vertex_list: HashMap::<usize,u64>,
-    mwis_results: HashMap::<usize,u64>,
+    pub mwis_results: BTreeMap::<usize,u64>,
 }
 
 
@@ -16,7 +18,7 @@ impl MWISInfo {
     pub fn new() -> Self {
         MWISInfo {
             vertex_list : HashMap::<usize,u64>::new(),
-            mwis_results : HashMap::<usize,u64>::new(),
+            mwis_results : BTreeMap::<usize,u64>::new(),
         }
         
     }
@@ -32,15 +34,23 @@ impl MWISInfo {
     pub fn compute_mwis(&mut self) {
 
         self.mwis_results.insert(0,0);
-        let w1 = self.vertex_list.get(&1).unwrap().clone();
         if self.vertex_list.len() > 0 {
+            let w1 = self.vertex_list.get(&1).unwrap().clone();
             self.mwis_results.insert(1,w1);
         }
+        if self.vertex_list.len() > 1 {
+            let w1 = self.vertex_list.get(&1).unwrap().clone();
+            let w2 = self.vertex_list.get(&2).unwrap().clone();
+            self.mwis_results.insert(2,max(w1,w2));
+        }
 
-        let num_vertex = self.vertex_list.len();
-        for index in 2..num_vertex {
+
+        let max_vertex_id = self.vertex_list.len() + 1;
+        for index in 3..max_vertex_id {
+            let result1 = self.mwis_results.get(&(index-2)).unwrap().clone() +self.vertex_list.get(&index).unwrap().clone();
+            let result2 = self.mwis_results.get(&(index-1)).unwrap().clone();
+            self.mwis_results.insert(index,max(result1,result2));
             debug!("index {}", index);
-            
         }
 
     }
@@ -80,6 +90,7 @@ mod tests {
         init();
         let mut h = setup_basic();
         h.compute_mwis();
+        trace!("Final result {:#?}",h.mwis_results);
 
     }
 
