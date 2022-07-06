@@ -17,7 +17,7 @@ use crate::cmd_line::CommandArgs;
 mod mwis;
 use crate::mwis::MWISInfo;
 
-fn process_huffman(file: &mut File) {
+fn process_mwis(file: &mut File) {
 
     let mut reader = BufReader::new(file);
 
@@ -40,6 +40,9 @@ fn process_huffman(file: &mut File) {
         let weight = line_data.parse::<u64>().unwrap();
         h.add_vertex(weight);
     }
+    h.process();
+    let check_vertex = vec![1usize, 2, 3, 4, 17, 117, 517, 997];
+    println!("Result is \n{}",h.check_verts_in_mwis(check_vertex));
 }
 
 fn main() {
@@ -60,7 +63,7 @@ fn main() {
         Err(why) => panic!("couldn't open {}: {}", display, why),
         Ok(file) => file,
     };
-    process_huffman(&mut file);
+    process_mwis(&mut file);
 
 }
 
