@@ -42,7 +42,7 @@ fn process_mwis(file: &mut File) {
     }
     h.process();
     let check_vertex = vec![1usize, 2, 3, 4, 17, 117, 517, 997];
-    println!("Result is \n{}",h.check_verts_in_mwis(check_vertex));
+    println!("{}",h.check_verts_in_mwis(check_vertex));
 }
 
 fn main() {
